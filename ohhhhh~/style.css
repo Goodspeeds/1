@@ -1,0 +1,21 @@
+.container{
+	height: 500px;
+
+	display: flex;
+
+	flex-direction: column;
+
+	flex-wrap: wrap;
+	justify-content:space-beseline;
+	align-item:baseline;
+}
+.item-1{
+	height: 50px;
+	align-intems:flex-end;
+}
+
+
+
+
+
+
