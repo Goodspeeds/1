@@ -3,6 +3,15 @@
  * https://github.com/facebook/react-native
  */
 'use strict';
+
+import styles from './app/Styles/Main';
+import MovieList from './app/Components/MovieList';
+import USBox from './app/Components/USBox';
+import icons from './app/Asseets/Icon';
+import Featured from './app/Components/Featured';
+import Search from './app/Components/Search';
+
+
 import React, {
   AppRegistry,
   Component,
@@ -10,7 +19,8 @@ import React, {
   Text,
   View,
   ListView,
-  Image
+  Image,
+  TabBarIOS
 } from 'react-native';
 
 const REQUEST_URL = 'https://api.douban.com/v2/movie/top250';
@@ -19,6 +29,10 @@ class hhhhhh extends Component {
 
  constructor(props){
  	super(props);
+ 	this.state = {
+       selectedTab:'featured'
+
+ 	};
 /* 	let movies = [
        {title:'肖申克的救赎'},
        {title:'这个杀手不太冷'},
@@ -30,121 +44,62 @@ class hhhhhh extends Component {
 	rowHasChanged:(row1,row2) => row1 !== row2
 	});
 */
-	this.state = {
- 	//movies:dataSource.cloneWithRows(movies)
- 	movies:new ListView.DataSource({
- 	rowHasChanged:(row1,row2) => row1 !== row2
- 	}),
- 	 loaded:false
-   };
-   this.fetchData();
  }
 
- 	fetchData(){
- 		fetch(REQUEST_URL)
- 		.then(response =>response.json())
- 		.then(responseData =>{
- 			this.setState({
- 			movies:this.state.movies.cloneWithRows(responseData.subjects),
- 			loaded:true
- 		 });
- 		})
- 		.done()
- 	}
-
-renderMovieList(movie){
-	return(
-<View style={styles.item}>
-<View style={styles.itemImage}>
- 	<Image
- 		source={{uri:movie.images.large}}
- 		style={styles.image}
- 		/>
-
- 		</View>
- 			<View style={styles.itemContent}>
- 			<Text style={styles.itemHeader}>{movie.title}</Text>
-			<Text style={styles.itemMeta}>
-			{movie.original_title}({movie.year})
-			</Text>
-			<Text style={styles.redText}>{movie.rating.average}</Text>
- 		</View>
- 		</View>
-		);
-}
-
+ 	
 
   render() {
-  	if (!this.state.loaded) {
-  		return(
-  			<View style={styles.container}>
-				<View style={styles.loading}>
-					<Text>加载中。。。。。。</Text>
-				</View>
-  			</View>
-  			);
-  	}
+
     return (
-      <View style={styles.container}>
-      <ListView
-      dataSource={this.state.movies}
-      renderRow={this.renderMovieList}
- />
-      </View>
+    	<TabBarIOS barTintColor='darkslateblue' tintColor='white'>
+    	<TabBarIOS.Item
+    	//systemIcon="featured"
+    	icon={{uri:icons.star,scale:4.6}}
+    	title="推荐电影"
+    	selectedIcon={{uri:icons.starActive,scale:4.6}}
+		selected={this.state.selectedTab === 'featured'}
+		onPress={() => {
+			this.setState({
+				selectedTab:'featured'
+			});
+		}
+		}
+    	>
+    	<Featured />
+		</TabBarIOS.Item>
+		<TabBarIOS.Item 
+        icon={{uri:icons.board,scale:4.6}}
+    	title="北美电影"
+    	selectedIcon={{uri:icons.boardActive,scale:4.6}}
+		selected={this.state.selectedTab === 'us_box'}
+		onPress={() => {
+			this.setState({
+				selectedTab:'us_box'
+			});
+		}
+		}>
+	  <USBox />
+        </TabBarIOS.Item>
+         <TabBarIOS.Item 
+          icon={{uri:icons.search,scale:4.6}}
+          title="搜索"
+          selectedIcon={{uri:icons.search,scale:4.6}}
+          selected={this.state.selectedTab === 'search'}
+          onPress={() => {
+            this.setState({
+              selectedTab:'search'
+            });
+          }
+          }>
+          <Search />
+   </TabBarIOS.Item>
+   </TabBarIOS>
     );
+
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-  	flexDirection:'row',
-    flex: 1,
-    backgroundColor: '#eae7ff',
-    paddingTop:23,
-  
-  },
 
-loading:{
-	flex: 1,
-	justifyContent:'center',
-	alignItems:'center',
-},
-image:{
-	width:99,
-	height:138,
-	margin:6,
-},
 
-item:{
-	flexDirection:'row',
-	borderBottomWidth:1,
-	borderColor:'rgba(100,52,201,0.1)',
-    paddingBottom:6,
-    marginBottom:6,
-    flex:1,
-
-},
-itemContent:{
-	flex:1,
-	marginLeft:13,
-	marginTop:6
-},
-itemHeader:{
-	fontSize:18,
-	fontFamily:'Helvetica Neue',
-	fontWeight:'300',
-	color:'#6435c9',
-	marginBottom:6
-},
-itemMeta:{
-	fontSize:16,
-	color:'rgba(0,0,0,0.6)',
-	marginBottom:6
-},
-redText:{
-	color:'#db2828',
-	fontSize:15
-}
-});
 
 AppRegistry.registerComponent('hhhhhh', () => hhhhhh);
